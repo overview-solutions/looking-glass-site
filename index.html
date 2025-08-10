@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Overview Solutions</title>
+    <meta name="description" content="Overview Solutions – see systems from above." />
+    <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Continuous satellite map backdrop -->
+    <div id="map" aria-hidden="true"></div>
+
+    <!-- Long scroll area to drive camera movement -->
+    <main id="earth-track" aria-label="Earth imagery scrolling track">
+      <div class="scroll-spacer"></div>
+      <footer class="page-end">
+        <div class="content">
+          <h2>Overview Solutions</h2>
+          <p>Seeing systems from above.</p>
+          <p class="hint">Scroll to fly across the planet.</p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Black dimmer with a circular transparent hole to simulate a window viewport -->
+    <div class="viewport-mask" aria-hidden="true"></div>
+
+    <!-- Logo frame overlay (placed above the mask for the window look) -->
+    <img
+      class="logo-frame"
+      src="./drive-download-20250810T114339Z-1-001/v2_logo_Black_transparent.png"
+      alt="Overview Solutions logo frame"
+      draggable="false"
+    />
+
+    <!-- Brand and minimal nav -->
+    <header class="brand">
+      <div class="brand-inner">
+        <img class="brand-mark" src="./drive-download-20250810T114339Z-1-001/v2_logo_Black_transparent.png" alt="OVR" />
+        <div class="brand-text">
+          <h1>Overview Solutions</h1>
+          <p>Seeing systems from above</p>
+        </div>
+      </div>
+    </header>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>
+
+
