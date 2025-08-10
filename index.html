@@ -15,10 +15,66 @@
 
     <!-- Long scroll area to drive camera movement -->
     <main id="earth-track" aria-label="Earth imagery scrolling track">
+      <section class="card-stream" aria-label="About Overview Solutions">
+        <article class="card left large">
+          <h3>The Overview Effect</h3>
+          <figure class="card-figure">
+            <img src="./looking-glass.jpg" alt="Astronaut’s view through a space station window" />
+          </figure>
+          <p>The <strong>"Overview Effect"</strong> is a term collectively coined by a number of astronauts who have seen Earth from space. 
+            It describes the cognitive shift that happens when we see Earth from above. 
+            Inspired by this concept, we decided to build a company around it - pursuing projects that align with the spirit of making sense of the world from above. 
+            <br><br>Through the use of satellites, drones, and other Earth Observation technologies, we build data‑rich visual experiences of our world. This gives our clients a high‑level overview of their systems and how they work, and helps them make better decisions.</p>
+        </article>
+        <article class="card right large">
+          <h3>Our Background</h3>
+          <figure class="card-figure">
+            <img src="./drones.avif" alt="Remotely operated drone inspecting power lines" />
+          </figure>
+          <p>We combine the practices of Electrical Engineering, Video Game Development, and Data Science to identify emerging technologies that meet business needs. 
+            From bringing vendors and use-case leads to the table, we develop systems from concept, through prototyping, mission development, data pipelines, operations,cybersecurity, training, and deployment to deliver on our clients' critical needs.</p>
+        </article>
+        <article class="card left large">
+          <h3>Our Mission</h3>
+          <figure class="card-figure">
+            <img src="./anthroposcene.png" alt="Aerial landscape symbolizing the Anthropocene and Earth systems" />
+          </figure>
+          <p>As we progress further into the Anthroposcene, the state of our planet is becoming ever more important to understand and communicate. 
+            By largely focusing on energy systems at the largest and smallest scales, our mission is to take a First Principles approach to understanding the nature of how we scale power grids, utilities, and manmade systems with respect to our natural resources.</p>
+        </article>
+        <article class="card center large" id="contact">
+          <h3>Contact Us</h3>
+          <p>Tell us about your project and we’ll be in touch.</p>
+          <form class="contact-form" action="https://formsubmit.co/adam@overview.solutions" method="POST" target="_blank">
+            <input type="hidden" name="_subject" value="Website Contact – Overview Solutions" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="4" placeholder="How can we help?" required></textarea>
+            </div>
+            <div class="actions">
+              <button type="submit">Send Message</button>
+            </div>
+          </form>
+          <ul class="contact-list">
+            <li><a class="tel" href="tel:+16143279229">(614) 327-9229</a></li>
+            <li><span>Columbus, OH</span></li>
+          </ul>
+        </article>
+      </section>
       <div class="scroll-spacer"></div>
       <footer class="page-end">
         <div class="content">
-          <h2>Overview Solutions</h2>
+          <h2>Overview Solutions LLC</h2>
           <p>Seeing systems from above.</p>
           <p class="hint">Scroll to fly across the planet.</p>
         </div>
@@ -46,6 +102,8 @@
         </div>
       </div>
     </header>
+
+    
 
     <script src="./script.js"></script>
   </body>

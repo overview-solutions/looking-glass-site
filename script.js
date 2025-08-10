@@ -6,6 +6,7 @@
 
 const mapContainer = document.getElementById('map');
 let map;
+let introAnimating = false;
 
 // Choose a featured flyover. Options sketched for future:
 // - Ganges-Brahmaputra Delta (Bangladesh)
@@ -15,8 +16,8 @@ let map;
 const flyover = {
   name: 'Ganges-Brahmaputra Delta',
   // Bearing 90°: east is up, so to move visually DOWN the coast we go westward
-  startLon: 92.5,
-  endLon: 88.0,
+  startLon: 89.8,
+  endLon: 88.8,
   lat: 21.9,
   zoom: 8.8,
   bearing: 90 // 180° from previous (land on the right)
@@ -61,7 +62,39 @@ function initMap() {
     if (typeof map.setPrefetchZoomDelta === 'function') {
       map.setPrefetchZoomDelta(3); // preload more tiles in scroll direction
     }
-    updateCamera();
+    // Boost color vibrancy of raster tiles
+    try {
+      map.setPaintProperty('s2', 'raster-saturation', 0.35);
+      map.setPaintProperty('s2', 'raster-contrast', 0.2);
+      map.setPaintProperty('s2', 'raster-brightness-min', 0.02);
+      map.setPaintProperty('s2', 'raster-brightness-max', 1.05);
+    } catch (e) {
+      console.warn('Could not set raster style properties', e);
+    }
+
+    // Intro zoom: from global view to the flyover start, then hand off to scroll
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced) {
+      introAnimating = true;
+      // Start from a global-esque top-down view
+      map.jumpTo({ center: [flyover.startLon, 0], zoom: 1.8, bearing: 0, pitch: 0 });
+      // Ease into the target start view
+      map.easeTo({
+        center: [flyover.startLon, fixedLatitude],
+        zoom: flyover.zoom,
+        bearing: flyover.bearing,
+        pitch: 0,
+        duration: 2800,
+        easing: (t) => (t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t),
+        essential: true
+      });
+      map.once('moveend', () => {
+        introAnimating = false;
+        updateCamera();
+      });
+    } else {
+      updateCamera();
+    }
   });
 }
 
@@ -73,10 +106,13 @@ function lerp(a, b, t) { return a + (b - a) * t; }
 
 function updateCamera() {
   if (!map) return;
-  const spacer = document.querySelector('.scroll-spacer');
-  const max = spacer ? spacer.getBoundingClientRect().height - window.innerHeight : document.body.scrollHeight - window.innerHeight;
+  // Tie camera progress to total page scroll for consistent feel with cards
+  const doc = document.documentElement;
+  const totalScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
   const y = window.scrollY || window.pageYOffset;
-  const t = Math.max(0, Math.min(1, y / Math.max(1, max)));
+  // Apply a slight speed multiplier so map and cards feel in sync
+  const speed = 1.0; // 1.0 == match; increase to move map faster
+  const t = Math.min(1, Math.max(0, (y * speed) / totalScroll));
   const lon = lerp(startLongitude, endLongitude, t);
   const zoom = flyover.zoom; // constant zoom tuned for detail
   map.jumpTo({ center: [lon, fixedLatitude], zoom, bearing: flyover.bearing, pitch: 0 });
@@ -84,7 +120,7 @@ function updateCamera() {
 
 let ticking = false;
 function onScroll() {
-  if (!map) return;
+  if (!map || introAnimating) return;
   if (!ticking) {
     requestAnimationFrame(() => { updateCamera(); ticking = false; });
     ticking = true;
@@ -101,5 +137,4 @@ if (window.maplibregl) {
   // If CDN fails, keep page usable
   console.warn('MapLibre failed to load');
 }
-
 
