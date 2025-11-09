@@ -7,7 +7,7 @@
     <meta name="description" content="Overview Solutions – see systems from above." />
     <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=8" />
   </head>
   <body>
     <!-- Continuous satellite map backdrop -->
@@ -45,10 +45,22 @@
         <article class="card center large" id="contact">
           <h3>Contact Us</h3>
           <p>Tell us about your project and we’ll be in touch.</p>
-          <form class="contact-form" action="https://formsubmit.co/adam@overview.solutions" method="POST" target="_blank">
+          <form class="contact-form" id="contactForm" action="https://formsubmit.co/adam@overview.solutions" method="POST" target="_blank">
             <input type="hidden" name="_subject" value="Website Contact – Overview Solutions" />
             <input type="hidden" name="_captcha" value="false" />
-            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+            <input type="hidden" id="formTimestamp" name="_timestamp" value="" />
+            
+            <!-- Honeypot fields: hidden from humans, but bots will likely fill them -->
+            <input type="text" name="_honey" class="hp-field" tabindex="-1" autocomplete="off" />
+            <div class="hp-field">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <div class="hp-field">
+              <label for="company">Company Name</label>
+              <input id="company" name="company_name" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            
             <div class="field">
               <label for="name">Name</label>
               <input id="name" name="name" type="text" autocomplete="name" required />
@@ -95,7 +107,7 @@
     <!-- Brand and minimal nav -->
     <header class="brand">
       <div class="brand-inner">
-        <img class="brand-mark" src="./drive-download-20250810T114339Z-1-001/v2_logo_Black_transparent.png" alt="OVR" />
+        <img class="brand-mark" src="./drive-download-20250810T114339Z-1-001/v2_logo_White_transparent.png" alt="OVR" />
         <div class="brand-text">
           <h1>Overview Solutions</h1>
           <p>Seeing systems from above</p>

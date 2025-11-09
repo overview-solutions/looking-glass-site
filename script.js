@@ -7,6 +7,7 @@
 const mapContainer = document.getElementById('map');
 let map;
 let introAnimating = false;
+let mapInteractive = false; // Track if map is in interactive mode
 
 // Choose a featured flyover. Options sketched for future:
 // - Ganges-Brahmaputra Delta (Bangladesh)
@@ -105,7 +106,7 @@ const fixedLatitude = flyover.lat;
 function lerp(a, b, t) { return a + (b - a) * t; }
 
 function updateCamera() {
-  if (!map) return;
+  if (!map || mapInteractive) return; // Don't update if in interactive mode
   // Tie camera progress to total page scroll for consistent feel with cards
   const doc = document.documentElement;
   const totalScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
@@ -120,12 +121,57 @@ function updateCamera() {
 
 let ticking = false;
 function onScroll() {
-  if (!map || introAnimating) return;
+  if (!map || introAnimating || mapInteractive) return; // Don't scroll-update in interactive mode
   if (!ticking) {
     requestAnimationFrame(() => { updateCamera(); ticking = false; });
     ticking = true;
   }
 }
+
+// Toggle map interactivity
+function enableMapInteraction() {
+  if (!map) return;
+  mapInteractive = true;
+  mapContainer.style.pointerEvents = 'auto';
+  map.dragPan.enable();
+  map.scrollZoom.enable();
+  map.doubleClickZoom.enable();
+  mapContainer.style.cursor = 'grab';
+}
+
+function disableMapInteraction() {
+  if (!map) return;
+  mapInteractive = false;
+  mapContainer.style.pointerEvents = 'none';
+  map.dragPan.disable();
+  map.scrollZoom.disable();
+  map.doubleClickZoom.disable();
+  mapContainer.style.cursor = '';
+  // Return to scroll position
+  updateCamera();
+}
+
+// Click on map to enable interaction
+mapContainer.addEventListener('click', (e) => {
+  if (!mapInteractive) {
+    e.stopPropagation();
+    enableMapInteraction();
+  }
+});
+
+// Click outside map to disable interaction
+document.addEventListener('click', (e) => {
+  if (mapInteractive && !mapContainer.contains(e.target)) {
+    disableMapInteraction();
+  }
+});
+
+// ESC key to exit interactive mode
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mapInteractive) {
+    disableMapInteraction();
+  }
+});
 
 window.addEventListener('scroll', onScroll, { passive: true });
 window.addEventListener('resize', updateCamera);
@@ -136,5 +182,52 @@ if (window.maplibregl) {
 } else {
   // If CDN fails, keep page usable
   console.warn('MapLibre failed to load');
+}
+
+/*
+  Anti-spam form protection
+  Combines honeypot fields with timing checks to filter automated bots
+*/
+
+const contactForm = document.getElementById('contactForm');
+const timestampField = document.getElementById('formTimestamp');
+
+// Record when the form was loaded (bots submit too quickly)
+let formLoadTime = Date.now();
+
+if (contactForm && timestampField) {
+  // Set the timestamp when form loads
+  timestampField.value = formLoadTime;
+  
+  contactForm.addEventListener('submit', function(e) {
+    // Check honeypot fields - if any are filled, it's likely a bot
+    const honeyFields = [
+      document.querySelector('input[name="_honey"]'),
+      document.querySelector('input[name="website"]'),
+      document.querySelector('input[name="company_name"]')
+    ];
+    
+    for (let field of honeyFields) {
+      if (field && field.value !== '') {
+        e.preventDefault();
+        console.warn('Bot detected: honeypot field filled');
+        // Silently fail - don't give bots feedback
+        return false;
+      }
+    }
+    
+    // Check if form was submitted too quickly (less than 3 seconds)
+    const submitTime = Date.now();
+    const timeDiff = (submitTime - formLoadTime) / 1000; // in seconds
+    
+    if (timeDiff < 3) {
+      e.preventDefault();
+      alert('Please take a moment to review your message before submitting.');
+      return false;
+    }
+    
+    // If we get here, it's likely a legitimate submission
+    return true;
+  });
 }
 
